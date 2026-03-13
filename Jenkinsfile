@@ -11,7 +11,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/smunaver/alfpro.git'
+                git branch: 'main', url: 'https://github.com/smunaver/alfpro.git'
             }
         }
 
@@ -40,8 +40,13 @@ pipeline {
                         ssh ${SERVER} "sudo systemctl restart ${service}"
                         """
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }
