@@ -1,0 +1,122 @@
+SOP – Replace Identity.API Artifacts with New ZIP
+1️⃣ Go to the repository folder
+
+Navigate to your project directory.
+
+cd <your-repository-folder>
+
+Example:
+
+cd ~/alfpro
+2️⃣ Navigate to the artifacts folder
+cd publish-artifacts
+
+Check contents:
+
+ls
+
+You should see:
+
+ApiGateway
+Employee.API
+Identity.API
+Leave.API
+Payroll.API
+3️⃣ Delete existing Identity.API files
+
+⚠️ Only remove files inside the folder, not the folder itself.
+
+rm -rf Identity.API/*
+
+Verify:
+
+ls Identity.API
+
+It should return empty.
+
+4️⃣ Copy the new ZIP file into the folder
+
+Example if your zip is called:
+
+Identity.API_Release.zip
+
+Copy it:
+
+cp ~/Downloads/Identity.API_Release.zip Identity.API/
+
+Check:
+
+ls Identity.API
+
+Expected:
+
+Identity.API_Release.zip
+5️⃣ Unzip the new build
+
+Go inside the folder:
+
+cd Identity.API
+
+Unzip:
+
+unzip Identity.API_Release.zip
+
+Now you should see:
+
+Identity.API.dll
+Identity.API.runtimeconfig.json
+appsettings.json
+dependencies...
+6️⃣ Remove the ZIP file (optional but recommended)
+rm Identity.API_Release.zip
+
+Verify:
+
+ls
+
+You should only see artifact files.
+
+7️⃣ Go back to repository root
+cd ../../
+
+Confirm Git sees changes:
+
+git status
+
+You should see many modified files under:
+
+publish-artifacts/Identity.API
+8️⃣ Commit the changes
+git add publish-artifacts/Identity.API
+
+Then commit:
+
+git commit -m "Updated Identity.API artifacts"
+9️⃣ Push to GitHub
+git push
+🔟 CI/CD will deploy automatically
+
+Once pushed:
+
+Git Push
+   ↓
+Jenkins Pipeline Triggered
+   ↓
+Files copied to /opt/alfpro/Identity.API
+   ↓
+systemctl restart identity-api
+   ↓
+New Identity API running
+✔ Verify deployment on server
+
+SSH into server:
+
+ls /opt/alfpro/Identity.API
+
+Check service:
+
+systemctl status identity-api
+
+Expected:
+
+Active: active (running)
