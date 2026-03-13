@@ -3,17 +3,10 @@ pipeline {
     agent any
 
     environment {
-        SERVER = "ubuntu@192.168.0.59"
         DEPLOY_PATH = "/opt/alfpro"
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/smunaver/alfpro.git'
-            }
-        }
 
         stage('Deploy APIs') {
 
@@ -31,13 +24,14 @@ pipeline {
                         echo "Deploying ${api}"
 
                         sh """
-                        scp -r publish-artifacts/${api}/* ${SERVER}:${DEPLOY_PATH}/${api}/
+                        mkdir -p ${DEPLOY_PATH}/${api}
+                        cp -r publish-artifacts/${api}/* ${DEPLOY_PATH}/${api}/
                         """
 
                         def service = api.toLowerCase().replace(".api","-api")
 
                         sh """
-                        ssh ${SERVER} "sudo systemctl restart ${service}"
+                        sudo systemctl restart ${service}
                         """
                     }
 
