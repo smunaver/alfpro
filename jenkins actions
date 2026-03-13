@@ -1,0 +1,69 @@
+Good idea 👍 — this is actually a very good way to verify CI/CD is really deploying the artifacts.
+
+However ⚠️ do not delete the folders themselves, because your systemd services point to those paths.
+
+Instead, delete only the contents inside each folder.
+
+Step 1 — Stop all APIs first
+
+This prevents services from crashing while you delete files.
+
+sudo systemctl stop apigateway
+sudo systemctl stop asset-api
+sudo systemctl stop attendance-api
+sudo systemctl stop employee-api
+sudo systemctl stop identity-api
+sudo systemctl stop leave-api
+sudo systemctl stop masterdata-api
+sudo systemctl stop payroll-api
+Step 2 — Verify folders
+
+Check again:
+
+cd /opt/alfpro
+ls
+
+You should still see:
+
+ApiGateway
+Asset.API
+Attendance.API
+Employee.API
+Identity.API
+Leave.API
+MasterData.API
+Payroll.API
+Step 3 — Delete ONLY the files inside
+
+Run this carefully:
+
+sudo rm -rf /opt/alfpro/ApiGateway/*
+sudo rm -rf /opt/alfpro/Asset.API/*
+sudo rm -rf /opt/alfpro/Attendance.API/*
+sudo rm -rf /opt/alfpro/Employee.API/*
+sudo rm -rf /opt/alfpro/Identity.API/*
+sudo rm -rf /opt/alfpro/Leave.API/*
+sudo rm -rf /opt/alfpro/MasterData.API/*
+sudo rm -rf /opt/alfpro/Payroll.API/*
+Step 4 — Confirm they are empty
+
+Example:
+
+ls /opt/alfpro/Payroll.API
+
+Expected output:
+
+(empty)
+Step 5 — Trigger CI/CD again
+
+Now push something small:
+
+git commit --allow-empty -m "Test CICD redeploy"
+git push
+
+or modify any file.
+
+Jenkins should:
+
+copy publish-artifacts → /opt/alfpro
+restart services
